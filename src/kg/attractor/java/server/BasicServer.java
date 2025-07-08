@@ -19,10 +19,8 @@ public abstract class BasicServer {
         System.out.printf("Server started: http://%s:%d/%n", host, port);
 
         server.createContext("/", this::dispatch);
-
         server.createContext("/static", new StaticFileHandler(DATA.resolve("static")));
     }
-
 
     public final void start()           { server.start(); }
 
@@ -34,7 +32,14 @@ public abstract class BasicServer {
         if (q == null) return null;
         for (String p : q.split("&")) {
             String[] kv = p.split("=", 2);
-            if (kv.length == 2 && kv[0].equals(key)) return kv[1];
+            if (kv.length == 2 && kv[0].equals(key)) {
+                try {
+                    return java.net.URLDecoder.decode(kv[1], StandardCharsets.UTF_8.name());
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                    return kv[1];
+                }
+            }
         }
         return null;
     }
@@ -43,14 +48,19 @@ public abstract class BasicServer {
         try (BufferedReader r = new BufferedReader(
                 new InputStreamReader(ex.getRequestBody(), StandardCharsets.UTF_8))) {
             return r.lines().collect(Collectors.joining());
-        } catch (IOException e) { return ""; }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
     protected void redirect303(HttpExchange ex, String to) {
         try {
             ex.getResponseHeaders().add("Location", to);
             ex.sendResponseHeaders(ResponseCodes.REDIRECT_303.getCode(), -1);
-        } catch (IOException ignore) {}
+        } catch (IOException ignore) {
+            System.err.println("Ошибка при перенаправлении: " + ignore.getMessage());
+        }
     }
 
     protected void sendBytes(HttpExchange ex, ResponseCodes code,
@@ -60,10 +70,17 @@ public abstract class BasicServer {
         try (OutputStream os = ex.getResponseBody()) { os.write(data); }
     }
 
-
     private void dispatch(HttpExchange ex) throws IOException {
-        String key = ex.getRequestMethod().toUpperCase() + "  " + ex.getRequestURI().getPath();
-        routes.getOrDefault(key, this::respond404).handle(ex);
+        String path = ex.getRequestURI().getPath();
+        String method = ex.getRequestMethod().toUpperCase();
+        String key = method + "  " + path;
+
+        RouteHandler handler = routes.get(key);
+        if (handler != null) {
+            handler.handle(ex);
+        } else {
+            respond404(ex);
+        }
     }
 
     private void respond404(HttpExchange ex) {
@@ -71,7 +88,9 @@ public abstract class BasicServer {
             sendBytes(ex, ResponseCodes.NOT_FOUND,
                     ContentType.TEXT_PLAIN,
                     "404 Not Found".getBytes(StandardCharsets.UTF_8));
-        } catch (IOException ignore) {}
+        } catch (IOException ignore) {
+            System.err.println("Ошибка при отправке 404: " + ignore.getMessage());
+        }
     }
 
     private static class StaticFileHandler implements HttpHandler {
@@ -89,6 +108,7 @@ public abstract class BasicServer {
             }
             String mime = Files.probeContentType(file);
             if (mime == null) mime = "application/octet-stream";
+
             byte[] bytes = Files.readAllBytes(file);
             ex.getResponseHeaders().set("Content-Type", mime);
             ex.sendResponseHeaders(200, bytes.length);

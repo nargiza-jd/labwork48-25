@@ -12,7 +12,7 @@ public class TemplateEngine {
     private static final Configuration cfg = new Configuration(Configuration.VERSION_2_3_29);
 
     static {
-        cfg.setClassForTemplateLoading(TemplateEngine.class, "/data/templates");
+        cfg.setClassForTemplateLoading(TemplateEngine.class, "/templates");
         cfg.setDefaultEncoding("UTF-8");
     }
 
@@ -24,6 +24,7 @@ public class TemplateEngine {
                 return writer.toString();
             }
         } catch (IOException | TemplateException e) {
+            e.printStackTrace();
             throw new RuntimeException("Ошибка при обработке шаблона: " + templateName, e);
         }
     }
