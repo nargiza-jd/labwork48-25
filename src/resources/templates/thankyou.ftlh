@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Спасибо!</title>
     <link rel="stylesheet" href="/static/css/candidates.css">
+    <link rel="stylesheet" href="/static/css/forms.css">
+    <link rel="stylesheet" href="/static/css/freemarker.css">
 </head>
 <body>
     <div class="container flex flex-col align-center">

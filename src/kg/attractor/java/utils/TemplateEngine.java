@@ -12,7 +12,7 @@ public class TemplateEngine {
     private static final Configuration cfg = new Configuration(Configuration.VERSION_2_3_29);
 
     static {
-        cfg.setClassForTemplateLoading(TemplateEngine.class, "/templates");
+        cfg.setClassForTemplateLoading(TemplateEngine.class, "/resources/templates");
         cfg.setDefaultEncoding("UTF-8");
     }
 

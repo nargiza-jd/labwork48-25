@@ -15,18 +15,17 @@ import java.util.Optional;
 
 public abstract class BasicServer {
 
+
     private final HttpServer server;
     private final Map<String, RouteHandler> getRoutes = new HashMap<>();
     private final Map<String, RouteHandler> postRoutes = new HashMap<>();
-
-    private static final Path DATA = Path.of("data");
 
     protected BasicServer(String host, int port) throws IOException {
         server = HttpServer.create(new InetSocketAddress(host, port), 50);
         System.out.printf("Server started: http://%s:%d/%n", host, port);
 
         server.createContext("/", this::dispatch);
-        server.createContext("/static", new StaticFileHandler(DATA.resolve("static")));
+        server.createContext("/static", new StaticFileHandler());
     }
 
     protected interface RouteHandler {

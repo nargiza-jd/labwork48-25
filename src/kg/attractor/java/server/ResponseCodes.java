@@ -9,7 +9,7 @@ public enum ResponseCodes {
     private final int code;
 
     ResponseCodes(int c) {
-        code = c;
+        this.code = c;
     }
 
     public int getCode() {

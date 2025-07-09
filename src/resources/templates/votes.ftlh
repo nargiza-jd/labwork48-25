@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Результаты голосования</title>
     <link rel="stylesheet" href="/static/css/candidates.css">
+    <link rel="stylesheet" href="/static/css/forms.css">
+    <link rel="stylesheet" href="/static/css/freemarker.css">
 </head>
 <body>
 <h1>Кто побеждает?</h1>
