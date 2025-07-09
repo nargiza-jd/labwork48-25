@@ -3,13 +3,13 @@
     "id": "markus-sillman",
     "name": "Markus Sillman",
     "image": "1.jpeg",
-    "votes": 0
+    "votes": 4
   },
   {
     "id": "nikita-culler",
     "name": "Nikita Culler",
     "image": "2.jpeg",
-    "votes": 0
+    "votes": 1
   },
   {
     "id": "tawanna-melanson",
@@ -33,6 +33,6 @@
     "id": "hershel-caffrey",
     "name": "Hershel Caffrey",
     "image": "6.jpeg",
-    "votes": 0
+    "votes": 2
   }
 ]

@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Результаты голосования</title>
+    <link rel="stylesheet" href="/static/css/candidates.css">
 </head>
 <body>
 <h1>Кто побеждает?</h1>

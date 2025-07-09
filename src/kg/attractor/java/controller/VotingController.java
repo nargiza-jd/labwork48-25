@@ -12,9 +12,9 @@ import kg.attractor.java.utils.Utils;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class VotingController extends BasicServer {
@@ -25,15 +25,10 @@ public class VotingController extends BasicServer {
     }
 
     private void initRoutes() {
-
         registerGet("/", this::displayCandidatesForVoting);
-
         registerGet("/vote", this::displayCandidatesForVoting);
-
         registerPost("/vote", this::handleVote);
-
         registerGet("/thankyou", this::thankYouPage);
-
         registerGet("/votes", this::showVotingResults);
     }
 
@@ -49,14 +44,14 @@ public class VotingController extends BasicServer {
         List<Map<String, Object>> candidateResults = candidates.stream()
                 .map(c -> {
                     double percentage = (totalVotes > 0) ? (double) c.getVotes() / totalVotes * 100 : 0;
-                    return Map.<String, Object>of(
-                            "id", c.getId(),
-                            "name", c.getName(),
-                            "image", c.getImage(),
-                            "votes", c.getVotes(),
-                            "percentage", String.format("%.2f", percentage),
-                            "isWinner", false
-                    );
+                    Map<String, Object> candidateMap = new HashMap<>();
+                    candidateMap.put("id", c.getId());
+                    candidateMap.put("name", c.getName());
+                    candidateMap.put("image", "/static/images/" + c.getImage());
+                    candidateMap.put("votes", c.getVotes());
+                    candidateMap.put("percentage", String.format("%.2f", percentage));
+                    candidateMap.put("isWinner", false);
+                    return candidateMap;
                 })
                 .sorted((c1, c2) -> Integer.compare((Integer)c2.get("votes"), (Integer)c1.get("votes")))
                 .collect(Collectors.toList());
@@ -72,7 +67,6 @@ public class VotingController extends BasicServer {
                 }
             }
         }
-
         renderTemplate(ex, "votes.ftlh", Map.of("candidateResults", candidateResults));
     }
 
@@ -87,7 +81,6 @@ public class VotingController extends BasicServer {
         if (c != null) {
             c.setVotes(c.getVotes() + 1);
             CandidateStorage.saveCandidates(candidates);
-
             redirect303(ex, "/thankyou?id=" + c.getId());
         } else {
             sendText(ex, ResponseCodes.NOT_FOUND, "Кандидат не найден.");

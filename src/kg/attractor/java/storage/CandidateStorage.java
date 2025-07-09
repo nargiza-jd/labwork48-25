@@ -16,6 +16,12 @@ public class CandidateStorage {
     public static List<Candidate> loadCandidates() {
         if (!Files.exists(FILE_PATH)) {
             List<Candidate> emptyList = new ArrayList<>();
+            emptyList.add(new Candidate("1", "Markus Sillman", "markus_sillman.jpg", 0));
+            emptyList.add(new Candidate("2", "Nikita Culler", "nikita_culler.jpg", 0));
+            emptyList.add(new Candidate("3", "Tawanna Melanson", "tawanna_melanson.jpg", 0));
+            emptyList.add(new Candidate("4", "Brunilda Mikels", "brunilda_mikels.jpg", 0));
+            emptyList.add(new Candidate("5", "Hubert Takahashi", "hubert_takahashi.jpg", 0));
+            emptyList.add(new Candidate("6", "Hershel Caffrey", "hershel_caffrey.jpg", 0));
             saveCandidates(emptyList);
             return emptyList;
         }
